@@ -24,7 +24,6 @@ import Home from './pages/Home';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { Pressable, StyleSheet, View, ViewBase } from 'react-native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
-import AddDevice from './pages/AddDevice';
 
 const theme = {
   ...DefaultTheme,
@@ -107,13 +106,10 @@ function Landing(navigation) {
 function HandleHome(navigation) {
 
   return (
-    <Stack.Navigator >
-      <Stack.Screen options={
-        {
-          header: (props) => <CustomNavigationBar {...props} />,
-        }
-      } name="Home" component={Home} />
-      <Stack.Screen name="AddDevice" component={AddDevice} />
+    <Stack.Navigator screenOptions={{
+      header: (props) => <CustomNavigationBar {...props} />,
+    }} >
+      <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
 
   );
@@ -131,7 +127,7 @@ function CustomNavigationBar({
 
   const title = getHeaderTitle(options, route.name);
   return (
-    <Appbar.Header mode='medium'>
+    <Appbar.Header style={{ backgroundColor: "red", flexDirection: "colomn" }} mode='medium'>
       <View style={styles.Header}>
         <View>
           <Text variant="headlineLarge">Hi, Jaden </Text>
@@ -173,6 +169,11 @@ function CustomNavigationBar({
         </View>
 
       </View>
+      <Text>test</Text>
+      <Divider style={{ color: "red " }} bold={true} />
+
+      <Text>test</Text>
+
     </Appbar.Header >
   );
 }
