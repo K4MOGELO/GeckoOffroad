@@ -13,9 +13,9 @@ export default function Controlers() {
 		<ScrollView horizontal={true} style={styles.container}>
 
 			<Surface style={[styles.LightSquare, isLightOn ? { borderColor: "yellow", borderWidth: 1 } : null]}>
-				<ImageBackground borderRadius={25} blurRadius={4} style={{ width: "100%", height: "100%" }} source={image} resizeMode="cover" >
-					<Pressable onPress={() => navigation.navigate('AddDevice')} style={{ margin: 6, flexDirection: "row", justifyContent: "space-between", }} >
-						<Text variant="titleLarge">Control your lights</Text>
+				<ImageBackground borderRadius={25} style={{ width: "100%", height: "100%" }} source={image} resizeMode="cover" >
+
+					<Pressable onPress={() => navigation.navigate('Add Device')} style={{ margin: 6, flexDirection: "row", justifyContent: "flex-end", }} >
 						<Pressable onPress={() => setLightOn(!isLightOn)}>
 							{isLightOn ? <><Icon source="power" color="green" size={60} />
 
