@@ -13,6 +13,7 @@ import AddDevice from './pages/AddDevice';
 import HomeHeader from './components/Home/HomeHeader';
 import { Apptheme } from './components/Theme';
 import MyAccount from './pages/Account/MyAccount';
+import ContextProvider from './pages/ContextProvider';
 
 
 
@@ -68,9 +69,10 @@ function HandleHome(navigation) {
 export default function App() {
   return (
     <PaperProvider theme={Apptheme}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          {/*
+      <ContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            {/*
           <Stack.Screen
             name="Landing"
             component={Landing}
@@ -78,13 +80,15 @@ export default function App() {
           />
 */}
 
-          <Stack.Screen
-            name="HandleHome"
-            component={HandleHome}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen
+              name="HandleHome"
+              component={HandleHome}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+
+      </ContextProvider>
     </PaperProvider >
   )
 }

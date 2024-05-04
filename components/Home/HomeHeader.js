@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: 10,
 
-    alignItems: "stretch",
+    alignItems: "center",
 
   },
 

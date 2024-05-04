@@ -1,143 +1,188 @@
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, ScrollView, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { Divider, Text, TouchableRipple, Button, Modal, Portal } from 'react-native-paper';
+import { Divider, Text, TouchableRipple, Button, Modal, Portal, IconButton, Icon } from 'react-native-paper';
+import { DevicesContext } from './ContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
 const devicesToAdd = [
   {
     id: 1,
+    available: true,
     type: 'Light',
-    title: 'Bedroom Light',
+    name: 'Bedroom Light',
     icon: require('../assets/icons/light-bulb-on.webp'),
+    count: 1,
+    isSwitchOn: false,
   },
   {
     id: 2,
-    type: 'Light',
-    title: 'Living Room Light',
+    type: 'AirConditioner',
+    name: 'Living Room Light',
     icon: require('../assets/icons/light-bulb-on.webp'),
+    available: true,
+    count: 1,
+    isSwitchOn: false,
   },
   {
     id: 3,
+    available: false,
+
     type: 'TV',
+    name: 'AirConditioner',
     title: 'Samsung TV',
     icon: require('../assets/icons/light-bulb-on.webp'),
   },
   {
     id: 4,
-    type: 'TV',
-    title: 'LG TV',
+    available: false,
+    type: 'Fan',
+    name: 'LG TV',
     icon: require('../assets/icons/light-bulb-on.webp'),
+    count: 1,
+    isSwitchOn: true,
   },
   {
     id: 5,
-    type: 'Speaker',
-    title: 'Bose Speaker',
+    type: 'Fan',
+    available: false,
+    name: 'Bose Speaker',
     icon: require('../assets/icons/light-bulb-on.webp'),
-  },
-  {
-    id: 6,
-    type: 'Speaker',
-    title: 'Sony Speaker',
-    icon: require('../assets/icons/light-bulb-on.webp'),
-  },
-  {
-    id: 7,
-    type: 'Thermostat',
-    title: 'Nest Thermostat',
-    icon: require('../assets/icons/light-bulb-on.webp'),
-  },
-  {
-    id: 8,
-    type: 'Thermostat',
-    title: 'Ecobee Thermostat',
-    icon: require('../assets/icons/light-bulb-on.webp'),
-  },
-  {
-    id: 9,
-    type: 'Camera',
-    title: 'Arlo Camera',
-    icon: require('../assets/icons/light-bulb-on.webp'),
-  },
-  {
-    id: 10,
-    type: 'Camera',
-    title: 'Wyze Camera',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    count: 1,
+    isSwitchOn: false,
   },
 ];
-
 const AddDevice = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [popUp, setPopUp] = useState(false);
+
+  const navigation = useNavigation();
+  const { devices, updateDevices } = useContext(DevicesContext);
 
   const handleDevicePress = (device) => {
+
+    setPopUp(true);
     setSelectedDevice(device);
     setShowModal(true);
   };
 
+
   const handleAddDevice = () => {
+
+    setPopUp(false);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setSuccess(true);
-      setTimeout(() => {
+      if (selectedDevice && selectedDevice.available) {
+        setSuccess(true);
+        setTimeout(() => {
+          setFailed(false);
+          setSuccess(true);
+          setLoading(false);
+          updateDevices([...devices, selectedDevice]);
+        }, 2000);
+      } else {
         setSuccess(false);
-        setShowModal(false);
-      }, 2000);
+        setLoading(false);
+        setFailed(true);
+      }
     }, 2000);
   };
 
-  const handleOk = () => {
+  const handlePairing = () => {
+
+    setLoading(false);
+
+    setSuccess(false);
+    setFailed(false);
     setShowModal(false);
+
   };
+  const handleFail = () => {
+    setShowModal(false);
+
+  };
+
+
+
 
   const renderModalContent = () => {
-    if (loading) {
-      return (
-        <View style={styles.modalContent}>
-          <ActivityIndicator size="large" color="black" />
-        </View>
-      );
-    } else if (success) {
-      return (
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Device successfully paired!</Text>
-          <Button mode="contained" onPress={handleOk}>OK</Button>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Do you want to add {selectedDevice?.title}?</Text>
-          <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={handleAddDevice} style={styles.button}>
-              Yes
-            </Button>
-            <Button mode="outlined" onPress={() => setShowModal(false)} style={styles.button}>
-              Cancel
-            </Button>
+    return (
+      <>
+        {loading && (
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color="black" />
+            <Text style={styles.modalText}>Pairing...</Text>
           </View>
-        </View>
-      );
-    }
-  };
+        )}
+        {success && (
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Device successfully paired!</Text>
+            <Button mode="contained" onPress={handlePairing}>OK</Button>
+          </View>
+        )}
+        {failed && (
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Failed to pair device!</Text>
+            <Button mode="contained" onPress={handlePairing}>OK</Button>
+          </View>
+        )}
+        {popUp && !loading && !success && !failed && (
+          <View style={styles.modalContent}>
 
+            <Text style={styles.modalText}>Pair with {selectedDevice?.name}?</Text>
+            <View style={styles.buttonContainer}>
+
+              <Button mode="contained" onPress={handleAddDevice} style={styles.button}>
+                Pair Device
+              </Button>
+              <Button mode="outlined" onPress={() => setShowModal(false)} style={styles.button}>
+                Cancel
+              </Button>
+            </View>
+
+          </View>
+        )}
+      </>
+    );
+  };
+  const isDevicePaired = (device) => {
+    // Check if the device is already paired
+    // You can implement your logic here based on your data structure
+    return devices.some((pairedDevice) => pairedDevice.id === device.id);
+  }
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.addeddevices}>
+
+        {devices[0] && <Text variant="labelSmall" >paired:  </Text>}
+        {devices.map((device, index) => (
+          <View style={{ flexDirection: "row", alignItems: "center", borderRadius: 40, padding: 4, backgroundColor: '#ffff' }} key={index} >
+
+            <Text variant="labelSmall" >{device.name} </Text>
+          </View>
+        ))}
+      </View>
+
       {devicesToAdd.map((device) => (
-        <TouchableRipple key={device.id} onPress={() => handleDevicePress(device)}>
-          <View style={styles.deviceContainer}>
+        <TouchableRipple
+          key={device.id}
+          onPress={() => handleDevicePress(device)}
+          disabled={isDevicePaired(device)}
+        >
+          <View style={[styles.deviceContainer, isDevicePaired(device) && styles.devicePaired]}>
             <Image source={device.icon} style={styles.icon} />
             <View style={styles.textContainer}>
-              <Text style={styles.title}>{device.title}</Text>
+              <Text style={styles.title}>{device.name}</Text>
               <Text style={styles.type}>{device.type}</Text>
             </View>
           </View>
         </TouchableRipple>
       ))}
-
       <Portal>
         <Modal visible={showModal} onDismiss={() => setShowModal(false)} contentContainerStyle={styles.modalContainer}>
           {renderModalContent()}
@@ -196,6 +241,18 @@ const styles = StyleSheet.create({
   button: {
     minWidth: 100,
   },
+  devicePaired: {
+    backgroundColor: '#ccc', // You can choose any color to indicate paired devices
+
+    display: "none",
+  },
+  addeddevices: {
+    flexDirection: 'row',
+    alignItems: "center",
+    margin: 7,
+    gap: 10,
+  },
+
 });
 
 export default AddDevice;

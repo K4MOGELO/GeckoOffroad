@@ -1,4 +1,4 @@
-import { Button, StyleSheet, View } from "react-native";
+import { Button, ScrollView, StyleSheet, View } from "react-native";
 import { auth } from "./auth/firebase";
 import { signOut } from "firebase/auth";
 
@@ -23,10 +23,10 @@ export default function Home({ navigation }) {
     });
   }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Controlers />
       <Devices />
-    </View>
+    </ScrollView>
   )
 
 

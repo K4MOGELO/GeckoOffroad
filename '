@@ -8,7 +8,7 @@ const FLASH_MODE = {
   "off": 1
 }
 
-export default function App() {
+export default function FlashLight() {
   const [flashMode, setFlashMode] = useState(FLASH_MODE.off);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
@@ -33,16 +33,29 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      {flashMode == 2 ?
-        <>
-          <Button title="Turn OFF Flash" onPress={toggleFlashMode} />
-        </> :
-        <>
-          <Button title="Turn ON Flash" onPress={toggleFlashMode} />
-        </>}
+    <Surface style={[styles.LightSquare, isLightOn ? { borderColor: "yellow", borderWidth: 1 } : null]}>
+
       <Camera style={styles.camera} flashMode={flashMode} />
-    </View>
+      <ImageBackground borderRadius={25} style={{ width: "100%", height: "100%" }} source={image} resizeMode="cover" >
+
+        <View style={{ margin: 6, flexDirection: "row", justifyContent: "flex-end", }} >
+          <Pressable onPress={toggleFlashMode() setLightOn(!isLightOn) }>
+          {isLightOn && FlashLight == 2 ? <><Icon source="power" color="green" size={60} />
+
+            <Text style={{ textAlign: "center" }}>ON</Text>
+          </> :
+            <>
+              <Icon source="power" color="red" size={60} />
+              <Text style={{ textAlign: "center" }}>OFF</Text></>
+          }
+        </Pressable>
+
+      </View>
+
+      <FlashLight />
+    </ImageBackground>
+
+		</Surface >
   );
 }
 

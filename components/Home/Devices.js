@@ -1,45 +1,98 @@
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Pressable, Image, Switch, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Icon, Menu, Surface, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Icon, IconButton, Menu, Modal, Portal, Surface, Text } from 'react-native-paper';
+import { DevicesContext } from '../../pages/ContextProvider';
 
 export default function Devices({ }) {
 	const navigation = useNavigation();
 	const [showDevicesMenu, setShowDevicesMenu] = useState(false);
 
-	const [devices, setDevices] = useState([
-		{
-			id: 1,
-			name: 'Lights',
-
-
-			icon: require("../../assets/images/lightsPic.webp"),
-			count: 1,
-			isSwitchOn: false,
-		},
-		{
-			id: 2,
-			name: 'Fan',
-			icon: require('../../assets/icons/light-bulb-on.webp'),
-			count: 1,
-			isSwitchOn: true,
-		},
-		{
-			id: 2,
-			name: 'Fan',
-			icon: require('../../assets/icons/light-bulb-on.webp'),
-			count: 1,
-			isSwitchOn: true,
-		},
-	])
+	const [showModal, setShowModal] = useState(false);
+	const [showRemoveDevice, setshowRemoveDevice] = useState(false);
+	const { devices, updateDevices } = useContext(DevicesContext);
 
 
 	const handleSwitchChange = (index) => {
 		const updatedDevices = [...devices];
 		updatedDevices[index] = { ...updatedDevices[index], isSwitchOn: !updatedDevices[index].isSwitchOn };
-		setDevices(updatedDevices);
+		updateDevices(updatedDevices);
 	};
+
+
+	const removeDeviceById = (id) => {
+		// Filter out the device with the provided id
+		const updatedDevices = devices.filter(device => device.id !== id);
+		// Update the devicesToAdd list with the filtered array
+		updateDevices(updatedDevices);
+	};
+
+
+	const [loading, setLoading] = useState(false);
+	const [success, setSuccess] = useState(false);
+
+	const [selectedDevice, setSelectedDevice] = useState(null);
+
+	const handleDevicePress = (device) => {
+		setSelectedDevice(device);
+		setShowModal(true);
+	};
+
+	const handleAddDevice = () => {
+
+		setLoading(true);
+		setTimeout(() => {
+			setLoading(false);
+			console.log(selectedDevice)
+
+			setShowModal(false);
+			removeDeviceById(selectedDevice.id)
+		}, 2000);
+	};
+
+
+	const renderModalContent = () => {
+
+
+		return (
+			<>
+				{loading && (
+					<View style={{ alignItems: 'center' }}>
+						<ActivityIndicator size="large" color="black" />
+						<Text style={{ fontSize: 16, marginBottom: 20, }}>Un Pairing...</Text>
+					</View>
+				)}
+				{!loading && !success && (
+					<View style={{ alignItems: 'center' }}>
+
+						<View style={{
+							backgroundColor: 'white',
+							padding: 20,
+							margin: 20,
+							borderRadius: 10,
+						}}>
+
+							<Text style={{ fontSize: 16, marginBottom: 20, }}>Are you sure you want to remove {selectedDevice?.name}</Text>
+
+							<Button mode="contained" onPress={handleAddDevice} style={{
+								minWidth: 100,
+							}}>
+								UnPair Device
+							</Button>
+							<Button mode="outlined" onPress={() => setShowModal(false)} style={{
+								minWidth: 100,
+							}}>
+								Cancel
+							</Button>
+						</View>
+
+					</View>
+				)}
+			</>
+		);
+	};
+
 
 	return (
 		<View>
@@ -53,8 +106,8 @@ export default function Devices({ }) {
 							<Icon source="dots-horizontal" size={30} />
 						</Pressable>
 					}>
-					<Menu.Item onPress={() => navigation.navigate('Add Device')} title="Add Device" />
-					<Menu.Item onPress={() => { }} title="Remove Device" />
+					<Menu.Item onPress={() => { setShowDevicesMenu(false); navigation.navigate('Add Device') }} title="Add Device" />
+					<Menu.Item onPress={() => { setShowDevicesMenu(false); setshowRemoveDevice(!showRemoveDevice) }} title={showRemoveDevice ? "Remove Device" : "cancel remove"} />
 				</Menu>
 			</Pressable>
 
@@ -69,9 +122,31 @@ export default function Devices({ }) {
 							</View>
 						</View>
 					</View>
-					<Switch value={device.isSwitchOn} onValueChange={() => handleSwitchChange(index)} />
+
+					{!showRemoveDevice ?
+
+						<Switch value={device.isSwitchOn} onValueChange={() => handleSwitchChange(index)} />
+						: <View style={{ flexDirection: "row", alignItems: "center" }}>
+							<Text variant="bodyMedium">unpair device</Text>
+							<IconButton
+								icon="close"
+								size={20}
+								onPress={() => handleDevicePress(device)}
+							/>
+						</View>
+					}
+					<Portal>
+						<Modal visible={showModal} onDismiss={() => setShowModal(false)} contentContainerStyle={styles.modalContainer}>
+							{renderModalContent()}
+						</Modal>
+					</Portal>
+
+
 				</Surface>
 			))}
+			<Pressable style={styles.addButton} onPress={() => navigation.navigate('Add Device')}>
+				<Text style={styles.addButtonText}>+ add a device</Text>
+			</Pressable>
 		</View>
 	);
 }
@@ -102,6 +177,16 @@ const styles = StyleSheet.create({
 	Devices: {
 		justifyContent: "space-between",
 		flexDirection: "row",
-	}
+	},
+	addButton: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 25,
+		marginVertical: 10,
+		alignSelf: 'center',
+	},
+	addButtonText: {
+		fontSize: 15,
+	},
 });
 
