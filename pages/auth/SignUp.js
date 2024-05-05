@@ -1,73 +1,124 @@
 
 import { useState } from "react";
-import { Alert, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StyleSheet, Switch, TextInput, View } from "react-native";
-const logo = require("../../assets/logo.png")
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { Alert, Image, KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
+const logo = require("../../assets/logo.png");
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "./firebase";
-import { Text } from 'react-native-paper';
+import { Button, HelperText, Text, TextInput as Input } from 'react-native-paper';
 
 export default function SignUp({ navigation }) {
-	const [click, setClick] = useState(false);
+
+	const [isLoading, setIsLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	
+		function handleSignUp() {
+			setIsLoading(true);
+			setErrorMessage("");
 
-	function CreateAcount() {
-		console.log("function run")
-		console.log("email: " + email + "\n and password: " + password)
-		createUserWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				// Signed up 
-				const user = userCredential.user;
-				// ...
-				console.log(user)
-			})
-			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				console.log(errorMessage)
+			createUserWithEmailAndPassword(auth, email, password)
+				.then((userCredential) => {
+					// Signed up successfully
+					const user = userCredential.user;
+					console.log("User signed up:", user);
 
-			});
-	}
+					// Update display name
+					updateProfile(user, {
+						displayName: name
+					}).then(() => {
+						console.log("Display name updated successfully");
 
+						// Sign in the user after successful signup
+						signInWithEmailAndPassword(auth, email, password)
+							.then(() => {
+								// User signed in successfully
+								console.log("User logged in after sign up");
+								setIsLoading(false);
 
+								// Navigate to the appropriate page after signup
+								navigation.navigate('HandleHome', { screen: 'Home' });
 
-	return (
-		<KeyboardAvoidingView style={styles.container}>
-
+								// You can add navigation logic here to direct users to the appropriate page after login
+							})
+							.catch((error) => {
+								// Handle sign in error
+								console.error("Sign in error after sign up:", error);
+								setIsLoading(false);
+							});
+					})
+						.catch((error) => {
+							console.error("Error updating display name:", error);
+							setErrorMessage("An error occurred during sign up. Please try again.");
+							setIsLoading(false);
+						});
+				})
+				.catch((error) => {
+					// Handle sign up error
+					let errorMessage = "An error occurred during sign up. Please try again.";
+					switch (error.code) {
+						// Handle specific error cases
+					}
+					console.error("Sign up error:", error);
+					setErrorMessage(errorMessage);
+					setIsLoading(false);
+				});
+		}
+return (
+		<KeyboardAvoidingView style={styles.container} behavior="height">
 			<Image source={logo} style={styles.image} resizeMode='contain' />
-			<Text style={styles.title}>Create an account</Text>
-			<View style={styles.inputView}>
-				<TextInput style={styles.input} placeholder='NAME' value={name} onChangeText={(name) => setName(name)} autoCorrect={false}
-					autoCapitalize='none' />
-				<TextInput style={styles.input} placeholder='EMAIL' value={email} onChangeText={(email) => setEmail(email)} autoCorrect={false}
-					autoCapitalize='none' />
+			<Text style={styles.title}>Create an Account</Text>
+			<HelperText type="error">
+				{errorMessage}
+			</HelperText>
 
-				<TextInput style={styles.input} placeholder='PASSWORD' secureTextEntry value={password} onChangeText={(password) => setPassword(password)} autoCorrect={false}
-					autoCapitalize='none' />
-			</View>
-			<View style={styles.rememberView}>
+			<View style={styles.inputView}>
+				<Input
+					label="Name"
+					value={name}
+					mode="outlined"
+					onChangeText={name => setName(name)}
+				/>
+				<Input
+					label="Email"
+					value={email}
+					mode="outlined"
+					onChangeText={email => setEmail(email)}
+				/>
+				<Input
+					label="Password"
+					value={password}
+					mode="outlined"
+					secureTextEntry={true}
+					onChangeText={password => setPassword(password)}
+				/>
 			</View>
 
 			<View style={styles.buttonView}>
-				<Pressable style={styles.button} onPress={() => CreateAcount()}>
-					<Text style={styles.buttonText}>Create account</Text>
-				</Pressable>
+				<Button
+					contentStyle={styles.button}
+					labelStyle={styles.buttonText}
+					buttonColor="black"
+					loading={isLoading}
+					mode="contained"
+					onPress={handleSignUp}
+				>
+					SIGN UP
+				</Button>
 			</View>
 
-			<Text style={styles.footerText}>Don't Have An Account?<Text style={styles.signup} onPress={() => navigation.navigate('SignIn')} >  Sign In</Text></Text>
-
-
+			<Text style={styles.footerText}>Already have an account? <Text style={styles.signup} onPress={() => navigation.navigate('SignIn')} >Sign In</Text></Text>
 		</KeyboardAvoidingView>
-	)
+	);
 }
-
 
 const styles = StyleSheet.create({
 	container: {
 		alignItems: "center",
 		paddingTop: 70,
+		height: "100%",
 	},
 	image: {
 		height: 160,
@@ -78,49 +129,16 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textTransform: "uppercase",
 		textAlign: "center",
-		paddingVertical: 40,
+		paddingVertical: 10,
 		color: "#ff6900"
 	},
 	inputView: {
-		gap: 15,
 		width: "100%",
 		paddingHorizontal: 40,
-		marginBottom: 5
-	},
-	input: {
-		height: 50,
-		paddingHorizontal: 20,
-		borderColor: "#ff6900",
-		borderWidth: 1,
-		borderRadius: 7
-	},
-	rememberView: {
-		width: "100%",
-		paddingHorizontal: 50,
-		justifyContent: "space-between",
-		alignItems: "center",
-		flexDirection: "row",
-		marginBottom: 8
-	},
-	switch: {
-		flexDirection: "row",
-		gap: 1,
-		justifyContent: "center",
-		alignItems: "center"
-
-	},
-	rememberText: {
-		fontSize: 13
-	},
-	forgetText: {
-		fontSize: 11,
-		color: "#ff6900"
+		marginBottom: 20
 	},
 	button: {
-		backgroundColor: "black",
 		height: 45,
-		borderColor: "gray",
-		borderWidth: 1,
 		borderRadius: 5,
 		alignItems: "center",
 		justifyContent: "center"
@@ -132,25 +150,8 @@ const styles = StyleSheet.create({
 	},
 	buttonView: {
 		width: "100%",
-		paddingHorizontal: 50
-	},
-	optionsText: {
-		textAlign: "center",
-		paddingVertical: 10,
-		color: "gray",
-		fontSize: 13,
-		marginBottom: 6
-	},
-	mediaIcons: {
-		flexDirection: "row",
-		gap: 15,
-		alignItems: "center",
-		justifyContent: "center",
-		marginBottom: 23
-	},
-	icons: {
-		width: 40,
-		height: 40,
+		paddingHorizontal: 40,
+		marginBottom: 10
 	},
 	footerText: {
 		textAlign: "center",
@@ -160,4 +161,5 @@ const styles = StyleSheet.create({
 		color: "#ff6900",
 		fontSize: 13
 	}
-})
+});
+

@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		elevation: 4, // Add elevation for shadow
 		borderRadius: 25,
-		width: 300, // Adjust width as needed
+		width: 250, // Adjust width as needed
 		height: 200, // Same as width for square shape
 		margin: 10, // Adjust spacing between squares
 	},

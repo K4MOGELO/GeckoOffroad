@@ -1,25 +1,39 @@
-
-import React, { useContext, useState } from 'react';
-import { View, ScrollView, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { Divider, Text, TouchableRipple, Button, Modal, Portal, IconButton, Icon } from 'react-native-paper';
-import { DevicesContext } from './ContextProvider';
-import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useState } from "react";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
+import {
+  Divider,
+  Text,
+  TouchableRipple,
+  Button,
+  Modal,
+  Portal,
+  IconButton,
+  Icon,
+} from "react-native-paper";
+import { DevicesContext } from "./ContextProvider";
+import { useNavigation } from "@react-navigation/native";
 
 const devicesToAdd = [
   {
     id: 1,
     available: true,
-    type: 'Light',
-    name: 'Bedroom Light',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    type: "Light",
+    name: "FlashLight",
+    icon: require("../assets/icons/light-bulb-on.webp"),
     count: 1,
     isSwitchOn: false,
   },
   {
     id: 2,
-    type: 'AirConditioner',
-    name: 'Living Room Light',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    type: "Air Conditioner",
+    name: "Air Conditioner",
+    icon: require("../assets/icons/AirConditioner.png"),
     available: true,
     count: 1,
     isSwitchOn: false,
@@ -28,26 +42,26 @@ const devicesToAdd = [
     id: 3,
     available: false,
 
-    type: 'TV',
-    name: 'AirConditioner',
-    title: 'Samsung TV',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    type: "TV",
+    name: "Smart Tv",
+    title: "Samsung TV",
+    icon: require("../assets/icons/SmartTv.png"),
   },
   {
     id: 4,
     available: false,
-    type: 'Fan',
-    name: 'LG TV',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    type: "Smart Door",
+    name: "Door",
+    icon: require("../assets/icons/wooden-door.webp"),
     count: 1,
     isSwitchOn: true,
   },
   {
     id: 5,
-    type: 'Fan',
+    type: "speaker",
     available: false,
-    name: 'Bose Speaker',
-    icon: require('../assets/icons/light-bulb-on.webp'),
+    name: "Smart Speaker",
+    icon: require("../assets/icons/SmartSpeaker.webp"),
     count: 1,
     isSwitchOn: false,
   },
@@ -64,15 +78,12 @@ const AddDevice = () => {
   const { devices, updateDevices } = useContext(DevicesContext);
 
   const handleDevicePress = (device) => {
-
     setPopUp(true);
     setSelectedDevice(device);
     setShowModal(true);
   };
 
-
   const handleAddDevice = () => {
-
     setPopUp(false);
     setLoading(true);
     setTimeout(() => {
@@ -94,21 +105,15 @@ const AddDevice = () => {
   };
 
   const handlePairing = () => {
-
     setLoading(false);
 
     setSuccess(false);
     setFailed(false);
     setShowModal(false);
-
   };
   const handleFail = () => {
     setShowModal(false);
-
   };
-
-
-
 
   const renderModalContent = () => {
     return (
@@ -122,29 +127,40 @@ const AddDevice = () => {
         {success && (
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Device successfully paired!</Text>
-            <Button mode="contained" onPress={handlePairing}>OK</Button>
+            <Button mode="contained" onPress={handlePairing}>
+              OK
+            </Button>
           </View>
         )}
         {failed && (
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Failed to pair device!</Text>
-            <Button mode="contained" onPress={handlePairing}>OK</Button>
+            <Button mode="contained" onPress={handlePairing}>
+              OK
+            </Button>
           </View>
         )}
         {popUp && !loading && !success && !failed && (
           <View style={styles.modalContent}>
-
-            <Text style={styles.modalText}>Pair with {selectedDevice?.name}?</Text>
+            <Text style={styles.modalText}>
+              Pair with {selectedDevice?.name}?
+            </Text>
             <View style={styles.buttonContainer}>
-
-              <Button mode="contained" onPress={handleAddDevice} style={styles.button}>
+              <Button
+                mode="contained"
+                onPress={handleAddDevice}
+                style={styles.button}
+              >
                 Pair Device
               </Button>
-              <Button mode="outlined" onPress={() => setShowModal(false)} style={styles.button}>
+              <Button
+                mode="outlined"
+                onPress={() => setShowModal(false)}
+                style={styles.button}
+              >
                 Cancel
               </Button>
             </View>
-
           </View>
         )}
       </>
@@ -154,16 +170,23 @@ const AddDevice = () => {
     // Check if the device is already paired
     // You can implement your logic here based on your data structure
     return devices.some((pairedDevice) => pairedDevice.id === device.id);
-  }
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.addeddevices}>
-
-        {devices[0] && <Text variant="labelSmall" >paired:  </Text>}
+        {devices[0] && <Text variant="labelSmall">paired: </Text>}
         {devices.map((device, index) => (
-          <View style={{ flexDirection: "row", alignItems: "center", borderRadius: 40, padding: 4, backgroundColor: '#ffff' }} key={index} >
-
-            <Text variant="labelSmall" >{device.name} </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              borderRadius: 40,
+              padding: 4,
+              backgroundColor: "#ffff",
+            }}
+            key={index}
+          >
+            <Text variant="labelSmall">{device.name} </Text>
           </View>
         ))}
       </View>
@@ -174,7 +197,12 @@ const AddDevice = () => {
           onPress={() => handleDevicePress(device)}
           disabled={isDevicePaired(device)}
         >
-          <View style={[styles.deviceContainer, isDevicePaired(device) && styles.devicePaired]}>
+          <View
+            style={[
+              styles.deviceContainer,
+              isDevicePaired(device) && styles.devicePaired,
+            ]}
+          >
             <Image source={device.icon} style={styles.icon} />
             <View style={styles.textContainer}>
               <Text style={styles.title}>{device.name}</Text>
@@ -184,7 +212,11 @@ const AddDevice = () => {
         </TouchableRipple>
       ))}
       <Portal>
-        <Modal visible={showModal} onDismiss={() => setShowModal(false)} contentContainerStyle={styles.modalContainer}>
+        <Modal
+          visible={showModal}
+          onDismiss={() => setShowModal(false)}
+          contentContainerStyle={styles.modalContainer}
+        >
           {renderModalContent()}
         </Modal>
       </Portal>
@@ -198,8 +230,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   deviceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   icon: {
@@ -209,51 +241,49 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   type: {
     fontSize: 14,
-    color: 'gray',
+    color: "gray",
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     margin: 20,
     borderRadius: 10,
   },
   modalContent: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalText: {
     fontSize: 16,
     marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     marginTop: 20,
   },
   button: {
     minWidth: 100,
   },
   devicePaired: {
-    backgroundColor: '#ccc', // You can choose any color to indicate paired devices
+    backgroundColor: "#ccc", // You can choose any color to indicate paired devices
 
     display: "none",
   },
   addeddevices: {
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     margin: 7,
     gap: 10,
   },
-
 });
 
 export default AddDevice;
-
