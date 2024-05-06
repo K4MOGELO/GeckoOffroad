@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
-import { Card, Title, Paragraph, IconButton, Surface, Button } from 'react-native-paper';
+import { Card, Title, Paragraph, IconButton, Surface, Button, Text } from 'react-native-paper';
 
 const Temperature = () => {
 	const [roomTemperature, setRoomTemperature] = useState(25);
@@ -13,6 +13,7 @@ const Temperature = () => {
 	const decreaseTemperature = () => {
 		setRoomTemperature(prevTemperature => prevTemperature - 1);
 	};
+	const [powerOn, setPowerOn] = useState(false)
 
 
 	const image = require("../../../assets/images/air-conditioner.webp")
@@ -24,14 +25,24 @@ const Temperature = () => {
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 10 }}>
 						<Title>Air Conditioner</Title>
 					</View>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-						<Paragraph>Temperature:</Paragraph>
-						<Paragraph>{roomTemperature}°C</Paragraph>
+
+					{powerOn &&
+						<>
+							<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+								<Paragraph>Temperature:</Paragraph>
+								<Paragraph>{roomTemperature}°C</Paragraph>
+							</View>
+							<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+								<Button icon="minus" mode="contained" onPress={decreaseTemperature}>Decrease</Button>
+								<Button icon="plus" mode="contained" onPress={increaseTemperature}>Increase</Button>
+							</View>
+						</>
+					}
+					<View>
+						<IconButton onPress={() => setPowerOn(!powerOn)} icon="power" iconColor={powerOn ? "green" : "red"} size={60} />
+						<Text style={{ textAlign: "center" }}>OFF</Text>
 					</View>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-						<Button icon="minus" mode="contained" onPress={decreaseTemperature}>Decrease</Button>
-						<Button icon="plus" mode="contained" onPress={increaseTemperature}>Increase</Button>
-					</View>
+
 				</Card.Content>
 			</ImageBackground>
 		</Surface>

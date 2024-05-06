@@ -57,7 +57,7 @@ function HandleHome(navigation) {
         component={Home}
       />
 
-      <Stack.Screen name="My Account" component={MyAccount} />
+      <Stack.Screen name="my account" component={MyAccount} />
       <Stack.Screen name="Settings" component={Settings} />
 
       <Stack.Screen
@@ -83,12 +83,13 @@ export default function App() {
       <ContextProvider>
         <NavigationContainer>
           <Stack.Navigator>
+            {/*
             <Stack.Screen
               name="Landing"
               component={Landing}
               options={{ headerShown: false }}
             />
-
+*/}
             <Stack.Screen
               name="HandleHome"
               component={HandleHome}

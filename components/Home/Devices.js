@@ -14,7 +14,7 @@ import {
 } from "react-native-paper";
 import { DevicesContext } from "../../pages/ContextProvider";
 
-export default function Devices({}) {
+export default function Devices({ }) {
   const navigation = useNavigation();
   const [showDevicesMenu, setShowDevicesMenu] = useState(false);
 

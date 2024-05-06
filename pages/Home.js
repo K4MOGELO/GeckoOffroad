@@ -23,27 +23,9 @@ export default function Home({ navigation }) {
 
   const [houseName, setHouseName] = useState(null);
 
-  useEffect(() => {
-    const retrieveData = async () => {
-      try {
-        const storedHouseName = await AsyncStorage.getItem("houseName");
-        if (storedHouseName !== null) {
-          setHouseName(storedHouseName);
-        }
-      } catch (error) {
-        console.error("Error retrieving house name:", error);
-      }
-    };
-
-    retrieveData();
-  }, []);
-
-  // Check if houseName exists, if not, render AddProfile component
-  if (!houseName) {
-    return <AddProfile />;
-  }
-
   const image = require("../assets/insidecaravan.webp");
+
+  const imageTest = require("../assets/images/ExteriorKitchen.jpg");
 
   return (
     <ImageBackground source={image} resizeMode="cover" style={styles.container}>
