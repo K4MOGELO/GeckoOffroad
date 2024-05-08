@@ -28,7 +28,7 @@ export default function Home({ navigation }) {
   const imageTest = require("../assets/images/ExteriorKitchen.jpg");
 
   return (
-    <ImageBackground source={imageTest} resizeMode="cover" style={styles.container}>
+    <ImageBackground source={image} resizeMode="cover" style={styles.container}>
       <ScrollView>
         <Controlers />
         <Devices />
