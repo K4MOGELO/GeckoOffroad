@@ -21,7 +21,7 @@ export default function HomeHeader({ navigation, route, options, back }) {
     <Appbar.Header style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>Hi, {user?.displayName}</Text>
-        <Text style={styles.welcome}>Welcome to your Smart House</Text>
+        <Text style={styles.welcome}>Welcome to your Smart House test</Text>
       </View>
       <View>
         <Menu
@@ -46,7 +46,7 @@ export default function HomeHeader({ navigation, route, options, back }) {
               navigation.navigate("Settings");
             }}
             title="Settings"
-            // disabled
+          // disabled
           />
         </Menu>
       </View>
