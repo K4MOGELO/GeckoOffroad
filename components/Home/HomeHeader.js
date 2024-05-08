@@ -21,7 +21,7 @@ export default function HomeHeader({ navigation, route, options, back }) {
     <Appbar.Header style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>Hi, {user?.displayName}</Text>
-        <Text style={styles.welcome}>Welcome to your Smart Home</Text>
+        <Text style={styles.welcome}>Welcome to your Smart House</Text>
       </View>
       <View>
         <Menu
