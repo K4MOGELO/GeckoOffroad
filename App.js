@@ -83,11 +83,11 @@ export default function App() {
       <ContextProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Landing"
               component={Landing}
               options={{ headerShown: false }}
-            />
+            /> */}
             <Stack.Screen
               name="HandleHome"
               component={HandleHome}
